@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Role-Play Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Role Selection Screen -->
+    <div id="roleSelection" class="screen active">
+        <div class="container">
+            <h1 class="title fade-in">Quiz Application</h1>
+            <p class="subtitle fade-in">Choose your role to get started</p>
+            <div class="role-buttons">
+                <button class="role-btn admin-btn" onclick="selectRole('admin')">
+                    <div class="role-icon">👨‍💼</div>
+                    <h3>Admin</h3>
+                    <p>Create and manage quiz questions</p>
+                </button>
+                <button class="role-btn user-btn" onclick="selectRole('user')">
+                    <div class="role-icon">👤</div>
+                    <h3>User</h3>
+                    <p>Take quizzes and test your knowledge</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="screen">
+        <div class="container">
+            <div class="header">
+                <h1>Admin Dashboard</h1>
+                <button class="back-btn" onclick="goBack()">← Back to Role Selection</button>
+            </div>
+            
+            <div class="admin-actions">
+                <button class="action-btn" onclick="showCreateQuestion()">
+                    ➕ Create New Question
+                </button>
+                <button class="action-btn" onclick="showQuestions()">
+                    📝 View All Questions
+                </button>
+                <button class="action-btn" onclick="exportQuestions()">
+                    💾 Export Questions
+                </button>
+                <input type="file" id="fileInput" accept=".txt" onchange="importQuestions(event)" style="display: none;">
+                <button class="action-btn" onclick="document.getElementById('fileInput').click()">
+                    📁 Import Questions
+                </button>
+            </div>
+
+            <!-- Create Question Form -->
+            <div id="createQuestionForm" class="form-container hidden">
+                <h2>Create New Question</h2>
+                <form id="questionForm">
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty Level:</label>
+                        <select id="difficulty" required>
+                            <option value="">Select Difficulty</option>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="question">Question:</label>
+                        <textarea id="question" placeholder="Enter your question here..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="option1">Option A:</label>
+                        <input type="text" id="option1" placeholder="Enter option A" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="option2">Option B:</label>
+                        <input type="text" id="option2" placeholder="Enter option B" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="option3">Option C:</label>
+                        <input type="text" id="option3" placeholder="Enter option C" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="option4">Option D:</label>
+                        <input type="text" id="option4" placeholder="Enter option D" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="correctAnswer">Correct Answer:</label>
+                        <select id="correctAnswer" required>
+                            <option value="">Select Correct Answer</option>
+                            <option value="A">Option A</option>
+                            <option value="B">Option B</option>
+                            <option value="C">Option C</option>
+                            <option value="D">Option D</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-buttons">
+                        <button type="submit">Add Question</button>
+                        <button type="button" onclick="hideCreateQuestion()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Questions List -->
+            <div id="questionsList" class="questions-container hidden">
+                <h2>All Questions</h2>
+                <div id="questionsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="userDashboard" class="screen">
+        <div class="container">
+            <div class="header">
+                <h1>User Dashboard</h1>
+                <button class="back-btn" onclick="goBack()">← Back to Role Selection</button>
+            </div>
+            
+            <div class="difficulty-selection">
+                <h2>Select Quiz Difficulty</h2>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn easy" onclick="startQuiz('easy')">
+                        <div class="difficulty-icon">🟢</div>
+                        <h3>Easy</h3>
+                        <p>Perfect for beginners</p>
+                    </button>
+                    <button class="difficulty-btn medium" onclick="startQuiz('medium')">
+                        <div class="difficulty-icon">🟡</div>
+                        <h3>Medium</h3>
+                        <p>Moderate challenge</p>
+                    </button>
+                    <button class="difficulty-btn hard" onclick="startQuiz('hard')">
+                        <div class="difficulty-icon">🔴</div>
+                        <h3>Hard</h3>
+                        <p>Expert level</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quizScreen" class="screen">
+        <div class="container">
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span id="questionCounter">Question 1 of 10</span>
+                </div>
+                <button class="back-btn" onclick="endQuiz()">← End Quiz</button>
+            </div>
+            
+            <div class="quiz-content">
+                <div class="question-card">
+                    <h2 id="currentQuestion">Question will appear here</h2>
+                    <div class="options" id="optionsContainer">
+                        <!-- Options will be dynamically added -->
+                    </div>
+                    <button id="nextBtn" class="next-btn hidden" onclick="nextQuestion()">Next Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="screen">
+        <div class="container">
+            <div class="results-content">
+                <div class="results-card">
+                    <div class="results-icon" id="resultsIcon">🎉</div>
+                    <h1 id="resultsTitle">Quiz Complete!</h1>
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <span id="scoreText">0/0</span>
+                        </div>
+                    </div>
+                    <p id="resultsMessage">Great job!</p>
+                    <div class="results-buttons">
+                        <button class="action-btn" onclick="goToUserDashboard()">Take Another Quiz</button>
+                        <button class="action-btn secondary" onclick="goBack()">Back to Role Selection</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
